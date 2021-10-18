@@ -13,6 +13,9 @@ class Generation {
         this.tarY = tarY;
         this.sorted = false;
     }
+    lowScore() {
+        return this.Rockets[0].score;
+    }
     createGenes(len){
         let genes = []
         for (let i = 0; i < len; i++){
