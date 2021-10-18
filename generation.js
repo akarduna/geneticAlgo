@@ -1,24 +1,20 @@
 import rocketRend from "./rendObjs/rocketRend";
 
 class Generation {
-    constructor(hyper,Rockets, tarX, tarY) {
+    constructor(hyper,Rockets, targ) {
         this.hyper = hyper;
-        const [sameNum, newNum, childNum, mutPer] = hyper;
-        this.sameNum = sameNum;
-        this.newNum = newNum;
-        this.childNum = childNum;
-        this.mutPer = mutPer;
         this.Rockets = Rockets;
-        this.tarX = tarX;
-        this.tarY = tarY;
+        this.tarX = targ.x;
+        this.tarY = targ.y;
         this.sorted = false;
+        this.targ = targ;
     }
     lowScore() {
         return this.Rockets[0].score;
     }
-    createGenes(len){
+    createGenes(){
         let genes = []
-        for (let i = 0; i < len; i++){
+        for (let i = 0; i < this.hyper.numGenes; i++){
             genes.push([Math.random()*10 - 5, Math.random()*10 - 5]);
         }
         return genes;
@@ -53,16 +49,16 @@ class Generation {
     }
     next() {
         this.reset();
-        let newRocks = this.Rockets.slice(0, this.sameNum);
-        for (let i = 0; i < (this.childNum); i+=2) {
-            newRocks.push(this.Rockets[i].breed(this.Rockets[i+1], this.mutPer));
-        }
-        for (let i = 0; i < this.newNum; i++){
-            let genes = this.createGenes(500);
+        let newRocks = this.Rockets.slice(0, this.hyper.popSize*this.hyper.samePer);
+        for (let i = 0; i < this.hyper.popSize*this.hyper.newPer; i++){
+            let genes = this.createGenes();
             let rock = new rocketRend(this.Rockets[0].startX, this.Rockets[0].startY, this.Rockets[0].ctx, this.tarX, this.tarY, genes)
             newRocks.push(rock);
         }
-        return new Generation(this.hyper, newRocks, this.tarX, this.tarY);
+        for (let i = 0; newRocks.length < this.hyper.popSize; i+=2) {
+            newRocks.push(this.Rockets[i].breed(this.Rockets[i+1], this.hyper.mutPer));
+        }
+        return new Generation(this.hyper, newRocks, this.targ);
     }
 }
 export default Generation

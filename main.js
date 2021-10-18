@@ -2,20 +2,29 @@ import './style.css'
 import Generation from  './generation'
 import rocketRend from './rendObjs/rocketRend';
 import targetRend from './rendObjs/targRend';
+import algo from './algo';
+import hyperData from './hyperData';
 
 var canvas = document.getElementById('can');
-var ctx = canvas.getContext('2d'); 
-let oldTime = Date.now();
-let objs = []
+var ctx = canvas.getContext('2d');
+let hyper = new hyperData(100, .3, .2, 95, 500);
 const startX = 500;
 const startY = 500;
 let tarX = 100;
 let tarY = 0;
 let tarW = 2;
 let tarH = 2;
-let genCount = 0;
-const targ = new targetRend(tarX, tarY, tarW, tarH, ctx);
-let gen;
+let targ = new targetRend(tarX, tarY, tarW, tarH, ctx);
+let alg = new algo(hyper, startX, startY, targ, ctx);
+let oldTime = Date.now();
+
+alg.run();
+
+
+
+
+
+
 function reset(){
   genCount = 0;
   objs = [];
@@ -28,8 +37,6 @@ function reset(){
   oldTime = Date.now();
   gen = new Generation([30,20,100,95] , objs, tarX, tarY);
 }
-reset();
-
 async function frame() {
   for (let i = 0; i < 500; i++){
     gen.update();
@@ -54,4 +61,3 @@ async function frame() {
     frame();
   }, 1);
 }
-frame()
